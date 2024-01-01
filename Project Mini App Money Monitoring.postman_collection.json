@@ -1,0 +1,294 @@
+{
+	"info": {
+		"_postman_id": "05ddc596-50a3-4427-adec-01b0ff1b8ba0",
+		"name": "Project Mini App Money Monitoring",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8858909"
+	},
+	"item": [
+		{
+			"name": "Get All Category",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:2011/getAllCategory",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "2011",
+					"path": [
+						"getAllCategory"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Total Saving",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:2011/getTotalSaving",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "2011",
+					"path": [
+						"getTotalSaving"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit Withdrawal",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"transactionId\":\"WITHDRAW3\",\n\t\"savingName\":\"Tabungan Iphone\", \n\t\"transactionAmnt\":\"25000\",\n    \"withdrawCategory\":\"Food & Beverage\",\n    \"categoryType\":\"Expense\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:2011/editWithdrawal",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "2011",
+					"path": [
+						"editWithdrawal"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Insert Withdrawal",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"savingName\":\"Tabungan Rumah\", \n\t\"transactionAmnt\":\"20000\",\n    \"withdrawCategory\":\"Bills\",\n    \"categoryType\":\"Expense\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:2011/insertWithdrawal",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "2011",
+					"path": [
+						"insertWithdrawal"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit Deposit",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"transactionId\":\"DEPOSIT2\",\n\t\"savingName\":\"Tabungan Motor\", \n\t\"transactionAmnt\":\"270000\",\n    \"depositCategory\":\"Salary\",\n    \"categoryType\":\"Income\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:2011/editDeposit",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "2011",
+					"path": [
+						"editDeposit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Insert Deposit",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"savingName\":\"Tabungan Motor\", \n\t\"transactionAmnt\":\"2000000\",\n    \"depositCategory\":\"Salary\",\n    \"categoryType\":\"Income\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:2011/insertDeposit",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "2011",
+					"path": [
+						"insertDeposit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Category Saving",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"transactionId\":\"SV5\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:2011/deleteCategorySaving",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "2011",
+					"path": [
+						"deleteCategorySaving"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Saving",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:2011/getAllSavings",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "2011",
+					"path": [
+						"getAllSavings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit Saving Category",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"transactionId\":\"SV1\",\n\t\"savingName\":\"Tabungan IPhone\", \n\t\"maxOutcome\":\"2000000\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:2011/editSavingCategory",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "2011",
+					"path": [
+						"editSavingCategory"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Insert Saving Category",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"savingName\":\"Tabungan Rog Ally\", \n\t\"maxOutcome\":\"2000000\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:2011/insertSavingCategory",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "2011",
+					"path": [
+						"insertSavingCategory"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Category By Type",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"\":\"\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:2011/getCategoryByType",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "2011",
+					"path": [
+						"getCategoryByType"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

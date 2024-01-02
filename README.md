@@ -1,5 +1,4 @@
 # Project Mini Apps Money Monitoring
-### DDL
 
 Mini Project aplikasi money monitoring adalah aplikasi yang dibuat untuk melakukan monitor terhadap setiap transaksi keuangan baik itu pemasukan atau pengeluaran
 

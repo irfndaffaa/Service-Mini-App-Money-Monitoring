@@ -1,114 +1,91 @@
 package com.moneymonitoring.moneymonitoring.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import com.moneymonitoring.moneymonitoring.dto.SavingDTO;
+import com.moneymonitoring.moneymonitoring.entity.SavingCategoryEntity;
+import com.moneymonitoring.moneymonitoring.repository.SavingCategoryRepository;
+import com.moneymonitoring.moneymonitoring.service.SavingService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.moneymonitoring.moneymonitoring.dto.SavingDTO;
-import com.moneymonitoring.moneymonitoring.entity.SavingCategoryEntity;
-import com.moneymonitoring.moneymonitoring.repository.CategoryRepository;
-import com.moneymonitoring.moneymonitoring.repository.SavingCategoryRepository;
-import com.moneymonitoring.moneymonitoring.service.SavingService;
-
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 @Transactional(rollbackFor = Exception.class)
 public class SavingServiceImpl implements SavingService {
 
-    @Autowired
-    SavingCategoryRepository savingCategoryRepository;
+    private final SavingCategoryRepository savingCategoryRepository;
 
     @Override
+    @CacheEvict(value = "savingCategories", allEntries = true)
     public SavingCategoryEntity insertCategorySaving(SavingDTO savingDto) throws Exception {
-        
-        SavingCategoryEntity dataSavingCategory = new SavingCategoryEntity();
-        
-        int savingId = 1;
+        String getId = savingCategoryRepository.findTopByIdSavingCategory();
+        int savingId = Optional.ofNullable(getId)
+                .map(id -> id.replaceAll("\\D+", ""))
+                .filter(s -> !s.isEmpty())
+                .map(Integer::parseInt)
+                .orElse(0);
+        String uid = "SV" + (savingId + 1);
 
-        try{
-
-            String getId = savingCategoryRepository.findTopByIdSavingCategory();
-            savingId = (getId == null) ? 0 : Integer.parseInt(getId.replaceAll("\\D+",""));
-            String uid = "SV" + (savingId + 1);
-
-            dataSavingCategory.setIdCategorySaving(uid);
-            dataSavingCategory.setSavingName(savingDto.getSavingName());
-            dataSavingCategory.setMaxOutcome(savingDto.getMaxOutcome());
-
-            savingCategoryRepository.save(dataSavingCategory);
-
-        } catch(Exception e){
-
-            log.error(e.getMessage(), e);
-
-        }
-
-        return dataSavingCategory;
+        SavingCategoryEntity data = new SavingCategoryEntity();
+        data.setIdCategorySaving(uid);
+        data.setSavingName(savingDto.getSavingName());
+        data.setMaxOutcome(savingDto.getMaxOutcome());
+        return savingCategoryRepository.save(data);
     }
 
     @Override
+    @CacheEvict(value = "savingCategories", allEntries = true)
     public SavingCategoryEntity editCategorySaving(SavingDTO savingDto) throws Exception {
-
-        SavingCategoryEntity newDataSavingCategory = new SavingCategoryEntity();
-
-        try{
-
-            SavingCategoryEntity dataSavingCategory = savingCategoryRepository.findByIdCategorySaving(savingDto.getTransactionId());
-            newDataSavingCategory.setIdCategorySaving(dataSavingCategory.getIdCategorySaving());
-            newDataSavingCategory.setSavingName(savingDto.getSavingName());
-            newDataSavingCategory.setMaxOutcome(savingDto.getMaxOutcome());
-
-            savingCategoryRepository.save(newDataSavingCategory);
-
-        } catch(Exception e){
-
-            log.error(e.getMessage(), e);
-
-        }
-
-        return newDataSavingCategory;
-        
+        return Optional.ofNullable(savingCategoryRepository.findByIdCategorySaving(savingDto.getTransactionId()))
+                .map(existing -> {
+                    existing.setSavingName(savingDto.getSavingName());
+                    existing.setMaxOutcome(savingDto.getMaxOutcome());
+                    return savingCategoryRepository.save(existing);
+                })
+                .orElseThrow(() -> new RuntimeException("Saving category not found: " + savingDto.getTransactionId()));
     }
 
     @Override
+    @Cacheable(value = "savingCategories", key = "'all'")
     public List<SavingCategoryEntity> getAllCategorySaving() {
         return savingCategoryRepository.findAll();
     }
 
     @Override
+    @CacheEvict(value = "savingCategories", allEntries = true)
     public SavingDTO deleteCategorySaving(SavingDTO savingDTO) throws Exception {
-
-        String msg = "";
-
-        try{
-
-            SavingCategoryEntity dataSavingCategory = savingCategoryRepository.findByIdCategorySaving(savingDTO.getTransactionId());
-
-            if(dataSavingCategory == null){
-                msg = "Data not found";
-                savingDTO.setMsg(msg);
-            } else {
-                savingCategoryRepository.deleteById(dataSavingCategory.getIdCategorySaving());
-                msg = "Deleted successfully";
-                savingDTO.setMsg(msg);
-            }
-
-
-        } catch(Exception e){
-
-            log.error(e.getMessage(), e);
-
-        }
-
-        return savingDTO;
+        return Optional.ofNullable(savingCategoryRepository.findByIdCategorySaving(savingDTO.getTransactionId()))
+                .map(entity -> {
+                    savingCategoryRepository.deleteById(entity.getIdCategorySaving());
+                    savingDTO.setMsg("Deleted successfully");
+                    return savingDTO;
+                })
+                .orElseGet(() -> {
+                    savingDTO.setMsg("Data not found");
+                    return savingDTO;
+                });
     }
 
-    
+    public List<String> getSavingNamesAboveThreshold(String threshold) {
+        long thresholdVal = Long.parseLong(threshold);
+        return savingCategoryRepository.findAll().stream()
+                .filter(s -> Long.parseLong(s.getMaxOutcome()) > thresholdVal)
+                .map(SavingCategoryEntity::getSavingName)
+                .map(String::toUpperCase)
+                .collect(Collectors.toList());
+    }
 
+    public long getTotalMaxOutcome() {
+        return savingCategoryRepository.findAll().stream()
+                .mapToLong(s -> Long.parseLong(s.getMaxOutcome()))
+                .sum();
+    }
 }
